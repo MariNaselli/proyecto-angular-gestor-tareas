@@ -4,6 +4,6 @@ export interface Task {
     description: string; // Descripción breve de la tarea
     completed: boolean; // Estado de la tarea (completada o no)
     category?: string; // Categoría de la tarea (opcional)
-    dueDate?: Date; // Fecha límite para completar la tarea (opcional)
+    date?: Date; // Fecha límite para completar la tarea (opcional)
   }
   
