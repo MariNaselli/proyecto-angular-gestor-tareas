@@ -3,7 +3,9 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TASKS_MOCK } from '../../task-mock';
 import { Task } from '../../task.model';
 import { FormsModule, NgModel } from '@angular/forms';
+import { TaskService } from '../../services/task.service';
 import { Modal } from 'bootstrap';
+
 
 @Component({
   selector: 'app-task-list',
@@ -16,21 +18,33 @@ export class TaskListComponent implements OnInit {
   tasks = TASKS_MOCK;
   newTask: Task = { id: 0, title: '', description: '', completed: false, category: '', date: new Date };
 
-  constructor() {}
+  constructor(private taskService: TaskService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.tasks = this.taskService.getTasks();
+  }
   
-  addTask() {
+  addTask(): void {
     if (this.newTask.title && this.newTask.description) {
+      // Agregar la tarea al array
       this.newTask.id = this.tasks.length + 1;
-      this.tasks.push(this.newTask);
+      this.tasks = [...this.tasks, this.newTask]; // Usa spread operator para forzar la detección de cambios
       this.newTask = { id: 0, title: '', description: '', completed: false, category: '', date: undefined };
-
+  
       // Cierra el modal
-      const modalInstance = new Modal(this.addTaskModal.nativeElement);
-      modalInstance.hide();
+      this.closeModal();
     }
   }
+  
+  closeModal(): void {
+    const modalElement = document.getElementById('addTaskModal');
+    if (modalElement) {
+      const modalInstance = Modal.getInstance(modalElement) || new Modal(modalElement);
+      modalInstance.hide(); // Oculta el modal correctamente
+    }
+  }
+  
+  
   
 
   editTask(task: any): void {
@@ -40,4 +54,5 @@ export class TaskListComponent implements OnInit {
   deleteTask(taskId: number): void {
     console.log('Eliminando tarea con ID:', taskId);
   }
+
 }
